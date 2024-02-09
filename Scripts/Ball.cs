@@ -1,11 +1,14 @@
+using System.Collections;
 using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
+    private GameController gameController;
     private LevelController levelController;
     private DecalsController decalsController;
     private SoundPlayComponent soundPlayComponent;
     private Rigidbody rigidbody;
+    private Animator animator;
 
     private float bounceForce = 5f;
     private bool addedForce = false;
@@ -15,13 +18,18 @@ public class Ball : MonoBehaviour
     public int passedPlatforms = 0;
 
     private float platformsPassedWithoutHits = 0;
+    private int collisions = 0;
 
     private void Awake()
     {
-        levelController = GameObject.Find("GameController").GetComponent<LevelController>();
-        decalsController = levelController.GetComponent<DecalsController>();
+        gameController = GameObject.Find("GameController").GetComponent<GameController>();
+        levelController = gameController.GetComponent<LevelController>();
+        decalsController = gameController.GetComponent<DecalsController>();
         rigidbody = GetComponent<Rigidbody>();
+        animator = GetComponent<Animator>();
         soundPlayComponent = GetComponent<SoundPlayComponent>();
+
+        StartCoroutine(EndFixedUpdateFrame());
     }
 
     private void Update()
@@ -40,13 +48,6 @@ public class Ball : MonoBehaviour
 
     private void LateUpdate()
     {
-        if(addedForce) {
-            frameWait++;
-            if (frameWait >= 5)
-            {
-                addedForce = false;
-            }
-        }
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -54,7 +55,7 @@ public class Ball : MonoBehaviour
         if (addedForce) return; //Check if force been added same frame, prevents addforce multiple times when hitting multiple platforms same time
 
         //Ball is below the collider
-        if (collision.contacts[0].normal.y < 0.75f)
+        if (collision.contacts[0].normal.y < 0.55f)
         {
             levelController.BreakPlatform(passedPlatforms + 1);
             rigidbody.velocity = velocityBeforePhysicsUpdate;
@@ -66,12 +67,42 @@ public class Ball : MonoBehaviour
             levelController.BreakPlatform(passedPlatforms + 1);
         }
 
-        soundPlayComponent?.PlayAudioClip("bounce");
-        rigidbody.AddForce(new Vector3(0f, bounceForce, 0f), ForceMode.Impulse);
-        frameWait = 0;
-        addedForce = true;
-        platformsPassedWithoutHits = 0;
-        decalsController.SpawnDecal(collision.contacts[0].point);
+        if (collision.transform.TryGetComponent(out IBouncable bounceable))
+        {
+            if (bounceable.Bounce())
+            {
+                soundPlayComponent?.PlayAudioClip("bounce");
+                rigidbody.AddForce(new Vector3(0f, bounceForce, 0f), ForceMode.Impulse);
+                frameWait = 0;
+                addedForce = true;
+                platformsPassedWithoutHits = 0;
+                decalsController.SpawnDecal(collision.contacts[0].point);
+                animator?.SetTrigger("bounce");
+            }
+            else
+            {
+                gameController.GameOver();
+            }
+        }
     }
 
+    private IEnumerator EndFixedUpdateFrame()
+    {
+        while (true) { 
+            yield return new WaitForFixedUpdate();
+            if (addedForce)
+            {
+                frameWait++;
+                if (frameWait >= 5)
+                {
+                    addedForce = false;
+                }
+            }
+        }
+    }
+
+    private void OnDisable()
+    {
+        StopAllCoroutines();
+    }
 }

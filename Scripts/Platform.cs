@@ -22,15 +22,36 @@ public class Platform : MonoBehaviour
     {
         int i = UnityEngine.Random.Range(0, platformParts.Length);
 
+
         if(i < platformParts.Length - 1)
         {
-            platformParts[i].Disable();
-            platformParts[i+1].Disable();
+            platformParts[i].SetPartAsTrigger();
+            platformParts[i+1].SetPartAsTrigger();
         }
         else
         {
-            platformParts[i].Disable();
-            platformParts[0].Disable();
+            platformParts[i].SetPartAsTrigger();
+            platformParts[0].SetPartAsTrigger();
+        }
+
+        int b = UnityEngine.Random.Range(0, platformParts.Length);
+        if (b == i || b == i + 1)
+        {
+            b -= 1;
+            if (b < 0)
+            {
+                b = platformParts.Length - 1;
+            }
+        }
+
+        platformParts[b].SetPartAsBad();
+    }
+
+    public void Finish()
+    {
+        foreach (PlatformPart part in platformParts)
+        {
+            part.SetPartAsFinish();
         }
     }
 

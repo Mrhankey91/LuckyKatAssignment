@@ -30,7 +30,15 @@ public class LevelController : MonoBehaviour
         {
             GameObject obj = Instantiate(platformPrefab, new Vector3(0f, i * -distanceBetweenPlatforms, 0f), Quaternion.identity, parent);
             platforms[i] = obj.GetComponent<Platform>();
-            platforms[i].Random();
+
+            if (i == platforms.Length - 1)
+            {
+                platforms[i].Finish();
+            }
+            else
+            {
+                platforms[i].Random();
+            }
         }
     }
 
