@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,12 +10,14 @@ public class LevelController : MonoBehaviour
     public float distanceBetweenPlatforms = 3f;
     public GameObject platformPrefab;
 
-    private int numberPlatform = 20;
+    private int numberPlatforms = 20;
     private Platform[] platforms = new Platform[0];
 
     private void Awake()
     {
         parent = GameObject.Find("Helix").transform;
+
+        GetComponent<GameController>().onRestarLevel += OnRestarLevel;
     }
 
     private void Start()
@@ -24,7 +27,7 @@ public class LevelController : MonoBehaviour
 
     private void GenerateRandomLevel()
     {
-        platforms = new Platform[numberPlatform];
+        platforms = new Platform[numberPlatforms];
 
         for(int i = 0; i < platforms.Length; i++)
         {
@@ -53,5 +56,18 @@ public class LevelController : MonoBehaviour
     public void BreakPlatform(int platform)
     {
         platforms[platform - 1].BreakByBall();
+    }
+
+    public float GetFinishLinePosition()
+    {
+        return numberPlatforms * -distanceBetweenPlatforms;
+    }
+
+    private void OnRestarLevel()
+    {
+        foreach(Platform platform in platforms)
+        {
+            platform.Reset();
+        }
     }
 }

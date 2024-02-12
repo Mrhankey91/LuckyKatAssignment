@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Platform : MonoBehaviour
 {
-    public PlatformPart[] platformParts = new PlatformPart[0];
+    public Mesh platformPartMesh;
+    public List<PlatformPart> platformParts = new List<PlatformPart>();
 
     void Awake()
     {

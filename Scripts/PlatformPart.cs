@@ -19,7 +19,7 @@ public class PlatformPart : MonoBehaviour, IBouncable
     private WaitForSeconds disableTime = new WaitForSeconds(2f);
 
     private bool alreadyBroken = false;
-    private bool badPart = false;
+    public PlatformType type = PlatformType.Basic;
 
     void Awake()
     {
@@ -43,26 +43,38 @@ public class PlatformPart : MonoBehaviour, IBouncable
         transform.position = startPosition;
         transform.rotation = startRotation;
         meshCollider.enabled = true;
-        meshCollider.isTrigger = false;
+        //meshCollider.isTrigger = (type == PlatformType.Trigger || type == PlatformType.Finish);
         alreadyBroken = false;
-        meshRenderer.material = goodMaterial;
         gameObject.SetActive(true);
+    }
+
+    public void SetPartAsBasic()
+    {
+        if (type == PlatformType.Basic) { return; }
+        type = PlatformType.Basic;
+        meshRenderer.material = goodMaterial;
+        meshCollider.isTrigger = false;
     }
 
     public void SetPartAsBad()
     {
-        badPart = true;
+        if (type == PlatformType.Bad) { return; }
+        type = PlatformType.Bad;
         meshRenderer.material = badMaterial;
+        meshCollider.isTrigger = false;
     }
 
     public void SetPartAsTrigger()
     {
+        if (type == PlatformType.Trigger) { return; }
+        type = PlatformType.Trigger;
         meshRenderer.material = triggerMaterial;
         meshCollider.isTrigger = true;
     }
 
     public void SetPartAsFinish()
     {
+        type = PlatformType.Finish;
         meshRenderer.material = finishMaterial;
         meshCollider.isTrigger = true;
     }
@@ -93,6 +105,6 @@ public class PlatformPart : MonoBehaviour, IBouncable
 
     public bool Bounce()
     {
-        return !badPart;
+        return type != PlatformType.Bad;
     }
 }

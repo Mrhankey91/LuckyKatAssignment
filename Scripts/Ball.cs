@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -9,7 +10,9 @@ public class Ball : MonoBehaviour
     private SoundPlayComponent soundPlayComponent;
     private Rigidbody rigidbody;
     private Animator animator;
+    private TrailRenderer trailRenderer;
 
+    private Vector3 startPosition;
     private float bounceForce = 5f;
     private bool addedForce = false;
     private int frameWait = 0;
@@ -17,8 +20,9 @@ public class Ball : MonoBehaviour
 
     public int passedPlatforms = 0;
 
-    private float platformsPassedWithoutHits = 0;
-    private int collisions = 0;
+    private int platformsPassedWithoutHits = 0;
+
+    private float lowestYPosition;
 
     private void Awake()
     {
@@ -28,17 +32,29 @@ public class Ball : MonoBehaviour
         rigidbody = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
         soundPlayComponent = GetComponent<SoundPlayComponent>();
+        trailRenderer = transform.Find("Trail").GetComponent<TrailRenderer>();
+
+        gameController.onRestarLevel += OnRestarLevel;
+
+        startPosition = transform.position;
 
         StartCoroutine(EndFixedUpdateFrame());
     }
 
     private void Update()
     {
-        if(transform.position.y <= -levelController.distanceBetweenPlatforms * passedPlatforms)
+        lowestYPosition = Mathf.Min(lowestYPosition, transform.position.y);
+
+        if (transform.position.y <= -levelController.distanceBetweenPlatforms * passedPlatforms)
         {
             passedPlatforms++; 
             platformsPassedWithoutHits++;
             levelController.PassedPlatform(passedPlatforms);
+        }
+
+        if (!trailRenderer.emitting && rigidbody.velocity.y < 0)
+        {
+            trailRenderer.emitting = true;
         }
     }
     void FixedUpdate()
@@ -78,6 +94,7 @@ public class Ball : MonoBehaviour
                 platformsPassedWithoutHits = 0;
                 decalsController.SpawnDecal(collision.contacts[0].point);
                 animator?.SetTrigger("bounce");
+                trailRenderer.emitting = false;
             }
             else
             {
@@ -101,8 +118,22 @@ public class Ball : MonoBehaviour
         }
     }
 
+    public float GetLowestYPosition()
+    {
+        return lowestYPosition;
+    }
+
     private void OnDisable()
     {
         StopAllCoroutines();
+    }
+
+    private void OnRestarLevel()
+    {
+        transform.position = startPosition;
+        lowestYPosition = 0f; 
+        passedPlatforms = 0;
+        platformsPassedWithoutHits = 0;
+        rigidbody.velocity = Vector3.zero;
     }
 }
