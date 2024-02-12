@@ -4,8 +4,29 @@ using UnityEngine;
 
 public class Platform : MonoBehaviour
 {
+    public GameObject platformPartPrefab;
     public Mesh platformPartMesh;
+    public Mesh platformPartTransparentMesh;
+    public Mesh platformPartColliderMesh;
     public List<PlatformPart> platformParts = new List<PlatformPart>();
+
+    private int platformPartsCount = 20;
+    private int partsMaxSize = 4;
+
+    private class PlatformPartSpawnData
+    {
+        public PlatformType platformType = PlatformType.Basic;
+
+        public PlatformPartSpawnData()
+        {
+
+        }
+
+        public PlatformPartSpawnData(PlatformType platformType)
+        {
+            this.platformType = platformType;
+        }
+    }
 
     void Awake()
     {
@@ -21,39 +42,177 @@ public class Platform : MonoBehaviour
 
     public void Random()
     {
-        int i = UnityEngine.Random.Range(0, platformParts.Length);
+        PlatformPartSpawnData[] spawnData = new PlatformPartSpawnData[platformPartsCount];
+        spawnData.FillArray();
 
+        spawnData[0].platformType = PlatformType.Trigger;
+        //spawnData[18].platformType = PlatformType.Trigger;
+        spawnData[19].platformType = PlatformType.Trigger;
+        /*
+        int i = UnityEngine.Random.Range(0, platformPartsCount);
 
-        if(i < platformParts.Length - 1)
+        if(i < platformPartsCount - 1)
         {
-            platformParts[i].SetPartAsTrigger();
-            platformParts[i+1].SetPartAsTrigger();
+            spawnData[i].platformType = PlatformType.Trigger;
+            spawnData[i+1].platformType = PlatformType.Trigger;
         }
         else
         {
-            platformParts[i].SetPartAsTrigger();
-            platformParts[0].SetPartAsTrigger();
+            spawnData[i].platformType = PlatformType.Trigger;
+            spawnData[0].platformType = PlatformType.Trigger;
         }
 
-        int b = UnityEngine.Random.Range(0, platformParts.Length);
+        int b = UnityEngine.Random.Range(0, platformPartsCount);
         if (b == i || b == i + 1)
         {
             b -= 1;
             if (b < 0)
             {
-                b = platformParts.Length - 1;
+                b = platformPartsCount - 1;
             }
         }
 
-        platformParts[b].SetPartAsBad();
+        spawnData[b].platformType = PlatformType.Bad;
+        */
+
+        GeneratePlatform(spawnData);
+    }
+
+    //Make platform and merge the part meshes to 1
+    private void GeneratePlatform(PlatformPartSpawnData[] spawnData)
+    {
+        float angles = 360f / platformPartsCount;
+        List<CombineInstance> combinedMeshes = new List<CombineInstance>();
+        List<CombineInstance> combinedColliderMeshes = new List<CombineInstance>();
+        CombineInstance combineInstance;
+
+        int startPos = 0;
+        int size = 50;
+        PlatformType platformType = PlatformType.Basic;
+
+        for(int i = 0; i < spawnData.Length; i++)
+        {
+            if (size < partsMaxSize && platformType == spawnData[i].platformType)// && i < spawnData.Length -1)
+            {
+            }
+            else //Create new part
+            {
+                if (i != 0)
+                    CreatePlatformPart(spawnData[startPos], combinedMeshes.ToArray(), combinedColliderMeshes.ToArray(), startPos * angles);
+
+                startPos = i;
+                size = 0;
+                //if (i < spawnData.Length - 1)
+                {
+                    combinedMeshes = new List<CombineInstance>();
+                    combinedColliderMeshes = new List<CombineInstance>();
+                    platformType = spawnData[i].platformType;
+                }
+            }
+
+            combineInstance = new CombineInstance();
+            combineInstance.mesh = (platformType == PlatformType.Finish || platformType == PlatformType.Trigger) ? platformPartTransparentMesh : platformPartMesh;
+            combineInstance.transform = Matrix4x4.TRS(transform.position, Quaternion.Euler(0f, (i - startPos) * angles, 0f), Vector3.one);
+
+            combinedMeshes.Add(combineInstance);
+
+            combineInstance = new CombineInstance();
+            combineInstance.mesh = platformPartColliderMesh;
+            combineInstance.transform = Matrix4x4.TRS(transform.position, Quaternion.Euler(0f, (i - startPos) * angles, 0f), Vector3.one);
+
+            combinedColliderMeshes.Add(combineInstance);
+
+            size++;
+        }
+
+        //Create Last part or add to first part
+        if (spawnData[startPos].platformType == PlatformType.Trigger && spawnData[0].platformType == PlatformType.Trigger)
+        {
+            AddToPlatformPart(platformParts[0], combinedMeshes, combinedColliderMeshes);
+        }
+        else
+        {
+            CreatePlatformPart(spawnData[startPos], combinedMeshes.ToArray(), combinedColliderMeshes.ToArray(), startPos * angles);
+        }
+    }
+
+    private void CreatePlatformPart(PlatformPartSpawnData spawnData, CombineInstance[] combinedMeshes, CombineInstance[] combinedColliderMeshes, float angles)
+    {
+        PlatformPart part = Instantiate(platformPartPrefab, Vector3.zero, Quaternion.Euler(0f, angles, 0f), transform).GetComponent<PlatformPart>();
+
+        Mesh mesh = new Mesh();
+        mesh.CombineMeshes(combinedMeshes);
+        part.GetComponent<MeshFilter>().sharedMesh = mesh;
+
+        mesh = new Mesh(); //create new mesh for collider
+        mesh.CombineMeshes(combinedColliderMeshes);
+        part.GetComponent<MeshCollider>().sharedMesh = mesh;
+
+        platformParts.Add(part);
+        part.SetPart(spawnData.platformType);
+    }
+
+    private void AddToPlatformPart(PlatformPart platformPart, List<CombineInstance> combinedMeshes, List<CombineInstance> combinedColliderMeshes)
+    {
+        float angles = 360f / platformPartsCount;
+
+        CombineInstance ci = new CombineInstance();
+        ci.mesh = platformPart.GetComponent<MeshFilter>().sharedMesh;
+        ci.transform = Matrix4x4.TRS(Vector3.zero, platformPart.transform.rotation, Vector3.one);
+        combinedMeshes.Add(ci);
+
+        ci.mesh = platformPart.GetComponent<MeshCollider>().sharedMesh;
+        ci.transform = Matrix4x4.TRS(Vector3.zero, platformPart.transform.rotation, Vector3.one);
+        combinedColliderMeshes.Add(ci);
+
+        for (int i = 0; i < combinedMeshes.Count-1; i++)//skip last cause it is part we will be adding to
+        {
+            ci = combinedMeshes[i];
+            ci.transform = Matrix4x4.TRS(transform.position, Quaternion.Euler(0f, -angles * (i + 1), 0f), Vector3.one);
+            combinedMeshes[i] = ci;
+
+            ci = combinedColliderMeshes[i];
+            ci.transform = Matrix4x4.TRS(transform.position, Quaternion.Euler(0f, -angles * (i + 1), 0f), Vector3.one);
+            combinedColliderMeshes[i] = ci;
+        }
+
+        Mesh mesh = new Mesh();
+        mesh.CombineMeshes(combinedMeshes.ToArray());
+        platformPart.GetComponent<MeshFilter>().sharedMesh = mesh;
+
+        mesh = new Mesh(); //create new mesh for collider
+        mesh.CombineMeshes(combinedColliderMeshes.ToArray());
+        platformPart.GetComponent<MeshCollider>().sharedMesh = mesh;
     }
 
     public void Finish()
     {
-        foreach (PlatformPart part in platformParts)
+        /*foreach (PlatformPart part in platformParts)
         {
             part.SetPartAsFinish();
+        }*/
+        float angles = 360f / platformPartsCount;
+        PlatformPartSpawnData[] spawnData = new PlatformPartSpawnData[] { new PlatformPartSpawnData(PlatformType.Finish) };
+
+        CombineInstance combineInstance;
+        List<CombineInstance> combinedMeshes = new List<CombineInstance>();
+        List<CombineInstance> combinedColliderMeshes = new List<CombineInstance>();
+
+        for (int i = 0; i < platformPartsCount; i++)
+        {
+            combineInstance = new CombineInstance();
+            combineInstance.mesh = platformPartTransparentMesh;
+            combineInstance.transform = Matrix4x4.TRS(transform.position, Quaternion.Euler(0f, i * angles, 0f), Vector3.one);
+
+            combinedMeshes.Add(combineInstance);
+
+            combineInstance = new CombineInstance();
+            combineInstance.mesh = platformPartColliderMesh;
+            combineInstance.transform = Matrix4x4.TRS(transform.position, Quaternion.Euler(0f, i  * angles, 0f), Vector3.one);
+
+            combinedColliderMeshes.Add(combineInstance);
         }
+        CreatePlatformPart(spawnData[0], combinedMeshes.ToArray(), combinedColliderMeshes.ToArray(), 0f);
     }
 
     public void PassedByBall()

@@ -48,6 +48,17 @@ public class PlatformPart : MonoBehaviour, IBouncable
         gameObject.SetActive(true);
     }
 
+    public void SetPart(PlatformType type)
+    {
+        switch (type)
+        {
+            case PlatformType.Basic: SetPartAsBasic(); break;
+            case PlatformType.Bad: SetPartAsBad(); break;
+            case PlatformType.Trigger: SetPartAsTrigger(); break;
+            case PlatformType.Finish: SetPartAsFinish(); break;
+        }
+    }
+
     public void SetPartAsBasic()
     {
         if (type == PlatformType.Basic) { return; }

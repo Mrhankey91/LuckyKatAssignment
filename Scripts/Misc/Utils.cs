@@ -15,4 +15,13 @@ public static class Utils
         }
         return dict;
     }
+
+    public static T[] FillArray<T>(this T[] array) where T: new ()
+    {
+        for(int i = 0; i < array.Length; ++i)
+        {
+            array[i] = new T();
+        }
+        return array;
+    }
 }
