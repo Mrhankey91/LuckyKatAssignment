@@ -20,6 +20,7 @@ public class PlatformPart : MonoBehaviour, IBouncable
 
     private bool alreadyBroken = false;
     public PlatformType type = PlatformType.Basic;
+    public int platformValue = 1;
 
     void Awake()
     {
@@ -48,7 +49,7 @@ public class PlatformPart : MonoBehaviour, IBouncable
         gameObject.SetActive(true);
     }
 
-    public void SetPart(PlatformType type)
+    public void SetPart(PlatformType type, int platformValue)
     {
         switch (type)
         {
@@ -57,6 +58,8 @@ public class PlatformPart : MonoBehaviour, IBouncable
             case PlatformType.Trigger: SetPartAsTrigger(); break;
             case PlatformType.Finish: SetPartAsFinish(); break;
         }
+
+        this.platformValue = platformValue;
     }
 
     public void SetPartAsBasic()
