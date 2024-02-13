@@ -20,13 +20,17 @@ public class Ball : MonoBehaviour
     private int frameWait = 0;
     private Vector3 velocityBeforePhysicsUpdate;
 
-    public int passedPlatforms = 0;
-    private int platformsPassedWithoutHits = 0;
-    private int platformsPassedBeforePowerMode = 2;
-    private float lowestYPosition;
+    public int currentFloor = 0;
+    public int reachedFloor = 0;
+    private float highestYPosition;
 
     private Color normalColor;
     public Color powerColor = Color.red;
+
+    public bool jump = false;
+
+    public delegate void OnCurrentFloorChange(int floor);
+    public OnCurrentFloorChange onCurrentFloorChange;
 
     private void Awake()
     {
@@ -50,21 +54,15 @@ public class Ball : MonoBehaviour
 
     private void Update()
     {
-        lowestYPosition = Mathf.Min(lowestYPosition, transform.position.y);
-
-        if (transform.position.y <= -levelController.distanceBetweenPlatforms * passedPlatforms)
-        {
-            passedPlatforms++; 
-            platformsPassedWithoutHits++;
-            levelController.PassedPlatform(passedPlatforms);
-        }
+        highestYPosition = Mathf.Max(highestYPosition, transform.position.y);
 
         if (!trailRenderer.emitting && rigidbody.velocity.y < 0)
         {
             trailRenderer.emitting = true;
         }
 
-        BallColor();
+        CheckCurrentFloor(true);
+        //BallColor();
     }
 
     void FixedUpdate()
@@ -75,18 +73,32 @@ public class Ball : MonoBehaviour
     private void Bounce(Vector3 position)
     {
         soundPlayComponent?.PlayAudioClip("bounce");
-        rigidbody.AddForce(new Vector3(0f, bounceForce, 0f), ForceMode.Impulse);
+        rigidbody.AddForce(new Vector3(0f, bounceForce * (jump ? 2f : 1f), 0f), ForceMode.Impulse);
         frameWait = 0;
         addedForce = true;
-        platformsPassedWithoutHits = 0;
         decalsController.SpawnDecal(position);
         animator?.SetTrigger("bounce");
         trailRenderer.emitting = false;
+        jump = false;
+        CheckCurrentFloor();
+    }
+
+    private void CheckCurrentFloor(bool checkIfGoingDownOnly = false)
+    {
+        int tempFloor = Mathf.FloorToInt(transform.position.y / levelController.distanceBetweenFloors);
+
+        if ((!checkIfGoingDownOnly && tempFloor != currentFloor) || (checkIfGoingDownOnly && tempFloor < currentFloor))
+        {
+            currentFloor = tempFloor;
+            onCurrentFloorChange?.Invoke(currentFloor);
+        }
+
+        reachedFloor = Mathf.Max(currentFloor, reachedFloor);
     }
 
     private void BallColor()
     {
-        ballMaterial.color = Color.Lerp(ballMaterial.color, platformsPassedWithoutHits > platformsPassedBeforePowerMode ? powerColor : normalColor, Time.deltaTime);
+        ballMaterial.color = Color.Lerp(ballMaterial.color, false ? powerColor : normalColor, Time.deltaTime);
         trailRenderer.startColor = trailRenderer.endColor = ballMaterial.color;
     }
 
@@ -105,26 +117,21 @@ public class Ball : MonoBehaviour
         }
     }
 
-    public float GetLowestYPosition()
+    public float GetHighestYPosition()
     {
-        return lowestYPosition;
+        return highestYPosition;
     }
 
     private void OnCollisionEnter(Collision collision)
     {
         if (addedForce) return; //Check if force been added same frame, prevents addforce multiple times when hitting multiple platforms same time
 
-        //Ball is below or beside the collider
-        if (collision.contacts[0].normal.y < 0.55f)
+        if(collision.transform.TryGetComponent(out IDamage damage))
         {
-            levelController.BreakPlatform(passedPlatforms + 1);
-            rigidbody.velocity = velocityBeforePhysicsUpdate;
-            return;
-        }
-
-        if (platformsPassedWithoutHits > platformsPassedBeforePowerMode)
-        {
-            levelController.BreakPlatform(passedPlatforms + 1);
+            if (damage.Damage() > 0)
+            {
+                gameController.GameOver();
+            }
         }
 
         if (collision.transform.TryGetComponent(out IBouncable bounceable))
@@ -158,9 +165,10 @@ public class Ball : MonoBehaviour
     private void OnRestarLevel()
     {
         transform.position = startPosition;
-        lowestYPosition = 0f; 
-        passedPlatforms = 0;
-        platformsPassedWithoutHits = 0;
+        highestYPosition = 0f; 
+        reachedFloor = 0;
+        currentFloor = 0;
         rigidbody.velocity = Vector3.zero;
+        jump = false; 
     }
 }

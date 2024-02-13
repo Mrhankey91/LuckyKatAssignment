@@ -7,11 +7,11 @@ public class LevelController : MonoBehaviour
 {
     private Transform parent;
 
-    public float distanceBetweenPlatforms = 3f;
-    public GameObject platformPrefab;
+    public float distanceBetweenFloors = 2.5f;
+    public GameObject floorPrefab;
 
-    private int numberPlatforms = 20;
-    private Platform[] platforms = new Platform[0];
+    private int numberFloors = 20;
+    private Floor[] floors = new Floor[0];
 
     private void Awake()
     {
@@ -27,47 +27,34 @@ public class LevelController : MonoBehaviour
 
     private void GenerateRandomLevel()
     {
-        platforms = new Platform[numberPlatforms];
+        floors = new Floor[numberFloors];
 
-        for(int i = 0; i < platforms.Length; i++)
+        for(int i = 0; i < floors.Length; i++)
         {
-            GameObject obj = Instantiate(platformPrefab, new Vector3(0f, i * -distanceBetweenPlatforms, 0f), Quaternion.identity, parent);
-            platforms[i] = obj.GetComponent<Platform>();
+            GameObject obj = Instantiate(floorPrefab, new Vector3(0f, i * distanceBetweenFloors, 0f), Quaternion.identity, parent);
+            floors[i] = obj.GetComponent<Floor>();
 
-            if (i == platforms.Length - 1)
+            if (i == floors.Length - 1)
             {
-                platforms[i].Finish();
+                //floors[i].Finish();
             }
             else
             {
-                platforms[i].Random();
+                //floors[i].Random();
             }
         }
-    }
-
-    public void PassedPlatform(int platform)
-    {
-        if (platform - 1 < platforms.Length -1)
-        {
-            platforms[platform - 1].PassedByBall();
-        }
-    }
-
-    public void BreakPlatform(int platform)
-    {
-        platforms[platform - 1].BreakByBall();
     }
 
     public float GetFinishLinePosition()
     {
-        return numberPlatforms * -distanceBetweenPlatforms;
+        return numberFloors * distanceBetweenFloors;
     }
 
     private void OnRestarLevel()
     {
-        foreach(Platform platform in platforms)
+        foreach(Floor floor in floors)
         {
-            platform.Reset();
+            floor.Reset();
         }
     }
 }

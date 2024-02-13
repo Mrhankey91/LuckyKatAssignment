@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerControls : MonoBehaviour
 {
+    private Ball ball;
     private Transform helixTransform;
 
     private Vector2 rotateInput;
@@ -13,6 +14,7 @@ public class PlayerControls : MonoBehaviour
 
     void Awake()
     {
+        ball = GameObject.Find("Ball").GetComponent<Ball>();
         helixTransform = GameObject.Find("Helix").transform;
     }
 
@@ -21,11 +23,17 @@ public class PlayerControls : MonoBehaviour
         helixTransform.eulerAngles += new Vector3(0f, rotateSpeed * rotateInput.x * Time.deltaTime, 0f);
     }
 
+    private void MouseTouchRelease()
+    {
+        //ball.jump = true;
+        rotateInput = Vector2.zero;
+    }
+
     private void OnRotateMouseTouch(InputValue value)
     {
         if (click)
         {
-            rotateInput = value.Get<Vector2>();
+            rotateInput = -value.Get<Vector2>();
         }
         else
         {
@@ -40,6 +48,19 @@ public class PlayerControls : MonoBehaviour
 
     private void OnClick(InputValue value)
     {
-        click = value.Get<float>() == 1;
+        bool temp = value.Get<float>() == 1;
+
+        if (temp == click) return;
+        click = temp;
+
+        if (!click)
+        {
+            MouseTouchRelease();
+        }
+    }
+
+    private void OnTap(InputValue value)
+    {
+        ball.jump = true;
     }
 }

@@ -21,7 +21,8 @@ public class ProgressBar : MonoBehaviour
 
     void Update()
     {
-        UpdateProgressBar(ball.GetLowestYPosition() / levelController.GetFinishLinePosition());
+        //UpdateProgressBar(ball.GetHighestYPosition() / levelController.GetFinishLinePosition());
+        UpdateProgressBar(ball.transform.position.y / levelController.GetFinishLinePosition());
     }
 
     /// <summary>
@@ -31,6 +32,6 @@ public class ProgressBar : MonoBehaviour
     public void UpdateProgressBar(float percentage)
     {
         //percentage /= 100f;
-        mask.padding = new Vector4(0f, zeroProgressPosition * (1f - percentage), 0f, 0f);
+        mask.padding = new Vector4(0f, 0f, 0f, zeroProgressPosition * (1f - percentage));
     }
 }

@@ -30,7 +30,6 @@ public class GameController : MonoBehaviour
 
     public void GameOver()
     {
-        Debug.Log("GameOver");
         Time.timeScale = 0f;
         onGameOver?.Invoke();
         gameOverPanel.ShowGameOverPanel(true);

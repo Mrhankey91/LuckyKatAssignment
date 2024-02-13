@@ -1,38 +1,64 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
 {
-    private Transform target;
-    //private Ball ball;
+    private Ball ball;
+    private LevelController levelController;
 
     private Vector3 cameraPosition;
     private float yOffset;
-    private float lowestYPosition;
+    private float targetPositionY;
+    private Coroutine moveCoroutine;
 
     private void Awake()
     {
-        target = GameObject.Find("Ball").transform;//.GetComponent<Ball>();
+        ball = GameObject.Find("Ball").GetComponent<Ball>();
+        levelController = GameObject.Find("GameController").GetComponent<LevelController>();
         cameraPosition = transform.position;
         yOffset = cameraPosition.y;
-        lowestYPosition = yOffset;
 
         GameObject.Find("GameController").GetComponent<GameController>().onRestarLevel += OnRestarLevel;
+        ball.onCurrentFloorChange += OnCurrentFloorChange;
     }
 
     void Update()
     {
-        cameraPosition.y = Mathf.Min(lowestYPosition, target.position.y + yOffset);
-        //cameraPosition.y = ball.GetLowestYPosition() + yOffset;
-        transform.position = cameraPosition;
-        lowestYPosition = cameraPosition.y;
+    }
+
+    private IEnumerator MoveCamera()
+    {
+        float time = 0f;
+        float moveDuration = 2f;
+        while (time < moveDuration)
+        {
+            yield return null;
+
+            time += Time.deltaTime;
+            cameraPosition.y = Mathf.Lerp(cameraPosition.y, targetPositionY, time/moveDuration);
+            //cameraPosition.y = Mathf.Min(lowestYPosition, target.position.y + yOffset);
+            //cameraPosition.y = ball.GetLowestYPosition() + yOffset;
+            transform.position = cameraPosition;
+        }
+
+        moveCoroutine = null;
     }
 
     private void OnRestarLevel()
     {
         cameraPosition.y = yOffset;
         transform.position = cameraPosition;
-        lowestYPosition = yOffset;
+    }
+
+    private void OnCurrentFloorChange(int floor)
+    {
+        targetPositionY = floor * levelController.distanceBetweenFloors + yOffset;
+
+        if(moveCoroutine != null) 
+            StopCoroutine(moveCoroutine);
+
+        moveCoroutine = StartCoroutine(MoveCamera());
     }
 }
