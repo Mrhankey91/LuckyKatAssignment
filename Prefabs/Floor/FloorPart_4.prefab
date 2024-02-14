@@ -73,7 +73,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: FloorPart_4
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3451118302482216456, guid: be65797db4ed2d9428a9b51ae2df5326, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -126,3 +127,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bd06f47ac49db54e98bb991d97278f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: floorpart_4

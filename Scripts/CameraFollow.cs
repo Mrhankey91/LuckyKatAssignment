@@ -13,6 +13,8 @@ public class CameraFollow : MonoBehaviour
     private float targetPositionY;
     private Coroutine moveCoroutine;
 
+    private bool isFalling = false;
+
     private void Awake()
     {
         ball = GameObject.Find("Ball").GetComponent<Ball>();
@@ -26,12 +28,17 @@ public class CameraFollow : MonoBehaviour
 
     void Update()
     {
+        if (isFalling)
+        {
+            cameraPosition.y = ball.transform.position.y + yOffset;
+            transform.position = cameraPosition;
+        }
     }
 
     private IEnumerator MoveCamera()
     {
         float time = 0f;
-        float moveDuration = 2f;
+        float moveDuration = 1f;
         while (time < moveDuration)
         {
             yield return null;
@@ -52,13 +59,20 @@ public class CameraFollow : MonoBehaviour
         transform.position = cameraPosition;
     }
 
-    private void OnCurrentFloorChange(int floor)
+    private void OnCurrentFloorChange(int floor, bool isFalling)
     {
-        targetPositionY = floor * levelController.distanceBetweenFloors + yOffset;
-
-        if(moveCoroutine != null) 
+        this.isFalling = isFalling;
+        if (moveCoroutine != null)
             StopCoroutine(moveCoroutine);
 
-        moveCoroutine = StartCoroutine(MoveCamera());
+        if (isFalling)
+        {
+
+        }
+        else
+        {
+            targetPositionY = floor * levelController.distanceBetweenFloors + yOffset;
+            moveCoroutine = StartCoroutine(MoveCamera());
+        }
     }
 }

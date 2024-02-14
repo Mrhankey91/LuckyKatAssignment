@@ -126,3 +126,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bd06f47ac49db54e98bb991d97278f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: floorpart_full

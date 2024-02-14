@@ -1,0 +1,236 @@
+{
+    "level": 2,
+    "floors": [
+        {
+            "floor": 0,
+            "parts": [
+                {
+                    "key": "floorpart_full",
+                    "rotation": 0
+                },
+                {
+                    "key": "coin",
+                    "rotation":  90
+                }
+            ]
+        },
+        {
+            "floor": 1,
+            "parts": [
+                {
+                    "key": "floorpart_4",
+                    "rotation": 180
+                },
+                {
+                    "key": "spikes",
+                    "rotation": 198,
+                    "mirrored": true
+                }
+            ]
+        },
+        {
+            "floor": 2,
+            "parts": [
+                {
+                    "key": "floorpart_4",
+                    "rotation": 90
+                },
+                {
+                    "key": "floorpart_1",
+                    "rotation": 0
+                },
+                {
+                    "key": "spikes_side",
+                    "rotation": 117,
+                    "mirrored": true
+                },
+                {
+                    "key": "spikes_side",
+                    "rotation": 0
+                }
+            ]
+        },
+        {
+            "floor": 3,
+            "parts": [
+                {
+                    "key": "floorpart_1",
+                    "rotation": 252
+                },
+                {
+                    "key": "floorpart_2",
+                    "rotation": -36
+                },
+                {
+                    "key": "floorpart_4",
+                    "rotation": 126
+                },
+                {
+                    "key": "spikes",
+                    "rotation": 126
+                }
+            ]
+        },
+        {
+            "floor": 4,
+            "parts": [
+                {
+                    "key": "floorpart_8",
+                    "rotation": 108
+                },
+                {
+                    "key": "floorpart_3",
+                    "rotation": 270
+                },
+                {
+                    "key": "spikes",
+                    "rotation": 126
+                },
+                {
+                    "key": "spikes",
+                    "rotation": 144
+                },
+                {
+                    "key": "spikes",
+                    "rotation": 108
+                }
+            ]
+        },
+        {
+            "floor": 5,
+            "parts": [
+                {
+                    "key": "floorpart_1",
+                    "rotation": -36
+                },
+                {
+                    "key": "floorpart_1",
+                    "rotation": 36
+                },
+                {
+                    "key": "floorpart_1",
+                    "rotation": 108
+                },
+                {
+                    "key": "floorpart_1",
+                    "rotation": 180
+                },
+                {
+                    "key": "floorpart_1",
+                    "rotation": 252
+                },
+                {
+                    "key": "spikes",
+                    "rotation": -36,
+                    "mirrored": true
+                },
+                {
+                    "key": "spikes",
+                    "rotation": 36,
+                    "mirrored": true
+                },
+                {
+                    "key": "spikes",
+                    "rotation": 108,
+                    "mirrored": true
+                },
+                {
+                    "key": "spikes",
+                    "rotation": 180,
+                    "mirrored": true
+                },
+                {
+                    "key": "spikes",
+                    "rotation": 252,
+                    "mirrored": true
+                },
+                {
+                    "key": "coin",
+                    "rotation": 72
+                }
+            ]
+        },
+        {
+            "floor": 6,
+            "parts": [
+                {
+                    "key": "floorpart_3",
+                    "rotation": 270
+                },
+                {
+                    "key": "floorpart_1",
+                    "rotation": 128
+                },
+                {
+                    "key": "floorpart_1",
+                    "rotation": 0
+                },
+                {
+                    "key": "spikes_side",
+                    "rotation": 0
+                },
+                {
+                    "key": "spikes_side",
+                    "rotation": 126
+                },
+                {
+                    "key": "spikes_side",
+                    "rotation": 0,
+                    "mirrored": true
+                },
+                {
+                    "key": "spikes_side",
+                    "rotation": 126,
+                    "mirrored": true
+                }
+            ]
+        },
+        {
+            "floor": 7,
+            "parts": [
+                {
+                    "key": "floorpart_8",
+                    "rotation": 72
+                },
+                {
+                    "key": "floorpart_4",
+                    "rotation": 252
+                }
+            ]
+        },
+        {
+            "floor": 8,
+            "parts": [
+                {
+                    "key": "floorpart_3",
+                    "rotation": 144
+                },
+                {
+                    "key": "floorpart_3",
+                    "rotation": 270
+                }
+            ]
+        },
+        {
+            "floor": 9,
+            "parts": [
+                {
+                    "key": "floorpart_1",
+                    "rotation": 126
+                },
+                {
+                    "key": "floorpart_1",
+                    "rotation": 198
+                },
+                {
+                    "key": "floorpart_2",
+                    "rotation": -36
+                },
+                {
+                    "key": "coin",
+                    "rotation": 306
+                }
+            ]
+        }
+    ]
+}

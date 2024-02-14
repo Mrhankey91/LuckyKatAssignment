@@ -27,6 +27,7 @@ public class SoundPlayComponent : MonoBehaviour
 
         if(dict.ContainsKey(id))
         {
+            audioSource.clip = dict[id].audioClip;
             audioSource.Play();
         }
         else

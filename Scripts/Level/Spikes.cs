@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Spikes : MonoBehaviour, IDamage
+public class Spikes : SpawnObject, IDamage
 {
     public int damage = 1;
 

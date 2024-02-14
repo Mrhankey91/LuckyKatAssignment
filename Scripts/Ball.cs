@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -19,6 +18,7 @@ public class Ball : MonoBehaviour
     private bool addedForce = false;
     private int frameWait = 0;
     private Vector3 velocityBeforePhysicsUpdate;
+    private int collisions = 0;
 
     public int currentFloor = 0;
     public int reachedFloor = 0;
@@ -29,7 +29,7 @@ public class Ball : MonoBehaviour
 
     public bool jump = false;
 
-    public delegate void OnCurrentFloorChange(int floor);
+    public delegate void OnCurrentFloorChange(int floor, bool isFalling);
     public OnCurrentFloorChange onCurrentFloorChange;
 
     private void Awake()
@@ -62,17 +62,25 @@ public class Ball : MonoBehaviour
         }
 
         CheckCurrentFloor(true);
-        //BallColor();
+        BallColor();
     }
 
     void FixedUpdate()
     {
         velocityBeforePhysicsUpdate = rigidbody.velocity;
+
+        if(collisions > 0 && !addedForce) //stuck in a collider
+        {
+            float y = transform.position.y % levelController.distanceBetweenFloors;
+            rigidbody.AddForce(new Vector3(0f, y < 1f ? 10f : -10f, 0f));
+        }
     }
 
     private void Bounce(Vector3 position)
     {
-        soundPlayComponent?.PlayAudioClip("bounce");
+        if(rigidbody.velocity.y > 1f) return;//Already moving upwards
+
+        soundPlayComponent?.PlayAudioClip(jump ? "jump" : "bounce");
         rigidbody.AddForce(new Vector3(0f, bounceForce * (jump ? 2f : 1f), 0f), ForceMode.Impulse);
         frameWait = 0;
         addedForce = true;
@@ -87,10 +95,11 @@ public class Ball : MonoBehaviour
     {
         int tempFloor = Mathf.FloorToInt(transform.position.y / levelController.distanceBetweenFloors);
 
-        if ((!checkIfGoingDownOnly && tempFloor != currentFloor) || (checkIfGoingDownOnly && tempFloor < currentFloor))
+        if ((!checkIfGoingDownOnly ) || (checkIfGoingDownOnly && tempFloor < currentFloor))
         {
+            bool isFalling = currentFloor > tempFloor;
             currentFloor = tempFloor;
-            onCurrentFloorChange?.Invoke(currentFloor);
+            onCurrentFloorChange?.Invoke(currentFloor, isFalling);
         }
 
         reachedFloor = Mathf.Max(currentFloor, reachedFloor);
@@ -98,7 +107,7 @@ public class Ball : MonoBehaviour
 
     private void BallColor()
     {
-        ballMaterial.color = Color.Lerp(ballMaterial.color, false ? powerColor : normalColor, Time.deltaTime);
+        ballMaterial.color = Color.Lerp(ballMaterial.color, jump ? powerColor : normalColor, Time.deltaTime * 10f);
         trailRenderer.startColor = trailRenderer.endColor = ballMaterial.color;
     }
 
@@ -124,9 +133,17 @@ public class Ball : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        collisions++;
         if (addedForce) return; //Check if force been added same frame, prevents addforce multiple times when hitting multiple platforms same time
 
-        if(collision.transform.TryGetComponent(out IDamage damage))
+        /*if (collision.contacts[0].normal.x > 0.5f || collision.contacts[0].normal.x < -0.5f)
+        {
+            rigidbody.AddForce(new Vector3(0f, -2f, 0f), ForceMode.Impulse);
+            //rigidbody.velocity = velocityBeforePhysicsUpdate;
+            return;
+        }*/
+
+        if (collision.transform.TryGetComponent(out IDamage damage))
         {
             if (damage.Damage() > 0)
             {
@@ -147,6 +164,11 @@ public class Ball : MonoBehaviour
         }
     }
 
+    private void OnCollisionExit(Collision collision)
+    {
+        collisions--;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (addedForce) return; //Check if force been added same frame, prevents addforce multiple times when hitting multiple platforms same time
@@ -154,6 +176,11 @@ public class Ball : MonoBehaviour
         if(other.transform.TryGetComponent(out PlatformPart part))
         {
             scoreComponent.Score += part.platformValue;
+        }
+
+        if(other.transform.TryGetComponent(out ICollectable collectable))
+        {
+            collectable.Collect();
         }
     }
 
