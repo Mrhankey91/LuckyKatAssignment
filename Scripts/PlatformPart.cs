@@ -1,6 +1,9 @@
 using System.Collections;
 using UnityEngine;
 
+/// <summary>
+/// NOT USED is from older helix jump prototype
+/// </summary>
 public class PlatformPart : MonoBehaviour, IBouncable
 {
     private Rigidbody rigidBody;

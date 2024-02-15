@@ -33,7 +33,7 @@ public class PlayerControls : MonoBehaviour
         //ball.jump = true;
         rotateInput = Vector2.zero;
 
-        if (swipeDirection.y > 2f && Mathf.Abs(swipeDirection.x) < swipeDirection.y)
+        if (Mathf.Abs(swipeDirection.y) > 2f && Mathf.Abs(swipeDirection.x) < Mathf.Abs(swipeDirection.y))
             ball.jump = true;
     }
 
@@ -41,7 +41,7 @@ public class PlayerControls : MonoBehaviour
     {
         if (click)
         {
-            rotateInput = -value.Get<Vector2>();
+            rotateInput = (PlayerPrefs.GetInt("InvertMovement", 0) == 0 ? -1 : 1) * value.Get<Vector2>() * PlayerPrefs.GetFloat("Sensitivity", 1f);
             swipeDirection += value.Get<Vector2>();
         }
         else
@@ -74,6 +74,10 @@ public class PlayerControls : MonoBehaviour
 
     private void OnTap(InputValue value)
     {
-        //ball.jump = true;
+        ball.jump = true;
+    }
+    private void OnJump(InputValue value)
+    {
+        ball.jump = true;
     }
 }

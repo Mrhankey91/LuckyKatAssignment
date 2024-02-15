@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+/// <summary>
+/// UNUSED From older helix jump prototype
+/// </summary>
 public class Platform : MonoBehaviour
 {
     public GameObject platformPartPrefab;

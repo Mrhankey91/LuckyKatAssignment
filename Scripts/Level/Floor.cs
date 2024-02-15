@@ -3,8 +3,7 @@ using UnityEngine;
 
 public class Floor : SpawnObject
 {
-    public bool start = false;
-
+    private bool start = false;
     private List<SpawnObject> objects = new List<SpawnObject>();
 
     public override void Reset()
@@ -14,6 +13,11 @@ public class Floor : SpawnObject
         {
             so.Reset();
         }
+    }
+
+    public void SetAsFinishStartNewLevel(bool b)
+    {
+        start = b;
     }
 
     public override void DisableObject()
@@ -30,5 +34,10 @@ public class Floor : SpawnObject
     public void AddObject(SpawnObject obj)
     {
         objects.Add(obj);
+    }
+
+    public bool IsStartFloor()
+    {
+        return start;
     }
 }

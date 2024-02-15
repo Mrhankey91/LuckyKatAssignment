@@ -8,13 +8,15 @@ public class Ball : MonoBehaviour
     private DecalsController decalsController;
     private SoundPlayComponent soundPlayComponent;
     private ScoreComponent scoreComponent;
+    private HealthComponent healthComponent;
     private Rigidbody rigidbody;
     private Animator animator;
     private TrailRenderer trailRenderer;
     private Material ballMaterial;
 
     private Vector3 startPosition;
-    private float bounceForce = 5f;
+    private float spawnOffsetY = 1f;
+    private float bounceForce = 4.5f; //5f
     private bool addedForce = false;
     private int frameWait = 0;
     private Vector3 velocityBeforePhysicsUpdate;
@@ -41,6 +43,7 @@ public class Ball : MonoBehaviour
         animator = GetComponent<Animator>();
         soundPlayComponent = GetComponent<SoundPlayComponent>();
         scoreComponent = gameController.GetComponent<ScoreComponent>();
+        healthComponent = gameController.GetComponent<HealthComponent>();
         trailRenderer = transform.Find("Trail").GetComponent<TrailRenderer>();
         ballMaterial = transform.Find("BallRenderer").GetComponent<MeshRenderer>().material;//use material instead of sharedmaterial, otherwise global material will be changed
         
@@ -126,6 +129,15 @@ public class Ball : MonoBehaviour
         }
     }
 
+    public void FinishedLevel()
+    {
+        reachedFloor = 0; 
+        currentFloor = 0;
+
+        levelController.FinishedLevel();
+        startPosition.y = levelController.GetFloorYPosition(currentFloor) + spawnOffsetY;
+    }
+
     public float GetHighestYPosition()
     {
         return highestYPosition;
@@ -145,10 +157,11 @@ public class Ball : MonoBehaviour
 
         if (collision.transform.TryGetComponent(out IDamage damage))
         {
-            if (damage.Damage() > 0)
+            healthComponent.Health -= damage.Damage();
+            /*if (damage.Damage() > 0)
             {
                 gameController.GameOver();
-            }
+            }*/
         }
 
         if (collision.transform.TryGetComponent(out IBouncable bounceable))

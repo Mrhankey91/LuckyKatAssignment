@@ -1,5 +1,6 @@
 {
     "level": 2,
+    "background": [ "#D5A7FF", "#BDA7FF" ], 
     "floors": [
         {
             "floor": 0,
@@ -10,7 +11,11 @@
                 },
                 {
                     "key": "coin",
-                    "rotation":  90
+                    "rotation": 90
+                },
+                {
+                    "key": "chest",
+                    "rotation": 18
                 }
             ]
         },
@@ -20,11 +25,6 @@
                 {
                     "key": "floorpart_4",
                     "rotation": 180
-                },
-                {
-                    "key": "spikes",
-                    "rotation": 198,
-                    "mirrored": true
                 }
             ]
         },
@@ -38,11 +38,6 @@
                 {
                     "key": "floorpart_1",
                     "rotation": 0
-                },
-                {
-                    "key": "spikes_side",
-                    "rotation": 117,
-                    "mirrored": true
                 },
                 {
                     "key": "spikes_side",
@@ -108,15 +103,7 @@
                     "rotation": 36
                 },
                 {
-                    "key": "floorpart_1",
-                    "rotation": 108
-                },
-                {
-                    "key": "floorpart_1",
-                    "rotation": 180
-                },
-                {
-                    "key": "floorpart_1",
+                    "key": "floorpart_3",
                     "rotation": 252
                 },
                 {
@@ -130,18 +117,8 @@
                     "mirrored": true
                 },
                 {
-                    "key": "spikes",
-                    "rotation": 108,
-                    "mirrored": true
-                },
-                {
-                    "key": "spikes",
-                    "rotation": 180,
-                    "mirrored": true
-                },
-                {
-                    "key": "spikes",
-                    "rotation": 252,
+                    "key": "spikes_side",
+                    "rotation": -90,
                     "mirrored": true
                 },
                 {
@@ -167,11 +144,7 @@
                 },
                 {
                     "key": "spikes_side",
-                    "rotation": 0
-                },
-                {
-                    "key": "spikes_side",
-                    "rotation": 126
+                    "rotation": 128
                 },
                 {
                     "key": "spikes_side",
@@ -180,7 +153,7 @@
                 },
                 {
                     "key": "spikes_side",
-                    "rotation": 126,
+                    "rotation": 128,
                     "mirrored": true
                 }
             ]
@@ -194,7 +167,7 @@
                 },
                 {
                     "key": "floorpart_4",
-                    "rotation": 252
+                    "rotation": -126
                 }
             ]
         },

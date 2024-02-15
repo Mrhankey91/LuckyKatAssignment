@@ -2,6 +2,7 @@
 public class LevelData
 {
     public int level;
+    public string[] background;
 
     public FloorData[] floors;
 }

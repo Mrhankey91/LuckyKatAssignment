@@ -1,5 +1,6 @@
 {
     "level": 1,
+    "background": [ "#F8A7FF", "#D5A7FF" ], 
     "floors": [
         {
             "floor": 0,
@@ -10,7 +11,11 @@
                 },
                 {
                     "key": "coin",
-                    "rotation":  90
+                    "rotation": 90
+                },
+                {
+                    "key": "chest",
+                    "rotation": 18
                 }
             ]
         },
@@ -18,13 +23,8 @@
             "floor": 1,
             "parts": [
                 {
-                    "key": "floorpart_4",
+                    "key": "floorpart_8",
                     "rotation": 180
-                },
-                {
-                    "key": "spikes",
-                    "rotation": 198,
-                    "mirrored": true
                 }
             ]
         },
@@ -32,21 +32,12 @@
             "floor": 2,
             "parts": [
                 {
-                    "key": "floorpart_4",
+                    "key": "floorpart_8",
                     "rotation": 90
                 },
                 {
-                    "key": "floorpart_1",
-                    "rotation": 0
-                },
-                {
                     "key": "spikes_side",
-                    "rotation": 117,
-                    "mirrored": true
-                },
-                {
-                    "key": "spikes_side",
-                    "rotation": 0
+                    "rotation": 27
                 }
             ]
         },
@@ -54,11 +45,7 @@
             "floor": 3,
             "parts": [
                 {
-                    "key": "floorpart_1",
-                    "rotation": 252
-                },
-                {
-                    "key": "floorpart_2",
+                    "key": "floorpart_8",
                     "rotation": -36
                 },
                 {
@@ -81,18 +68,6 @@
                 {
                     "key": "floorpart_3",
                     "rotation": 270
-                },
-                {
-                    "key": "spikes",
-                    "rotation": 126
-                },
-                {
-                    "key": "spikes",
-                    "rotation": 144
-                },
-                {
-                    "key": "spikes",
-                    "rotation": 108
                 }
             ]
         },
@@ -108,16 +83,8 @@
                     "rotation": 36
                 },
                 {
-                    "key": "floorpart_1",
-                    "rotation": 108
-                },
-                {
-                    "key": "floorpart_1",
-                    "rotation": 180
-                },
-                {
-                    "key": "floorpart_1",
-                    "rotation": 252
+                    "key": "floorpart_3",
+                    "rotation": -144
                 },
                 {
                     "key": "spikes",
@@ -131,22 +98,12 @@
                 },
                 {
                     "key": "spikes",
-                    "rotation": 108,
-                    "mirrored": true
-                },
-                {
-                    "key": "spikes",
-                    "rotation": 180,
-                    "mirrored": true
-                },
-                {
-                    "key": "spikes",
-                    "rotation": 252,
+                    "rotation": -144,
                     "mirrored": true
                 },
                 {
                     "key": "coin",
-                    "rotation": 72
+                    "rotation": 54
                 }
             ]
         },
@@ -167,11 +124,7 @@
                 },
                 {
                     "key": "spikes_side",
-                    "rotation": 0
-                },
-                {
-                    "key": "spikes_side",
-                    "rotation": 126
+                    "rotation": 128
                 },
                 {
                     "key": "spikes_side",
@@ -180,7 +133,7 @@
                 },
                 {
                     "key": "spikes_side",
-                    "rotation": 126,
+                    "rotation": 128,
                     "mirrored": true
                 }
             ]
@@ -194,7 +147,7 @@
                 },
                 {
                     "key": "floorpart_4",
-                    "rotation": 252
+                    "rotation": -126
                 }
             ]
         },

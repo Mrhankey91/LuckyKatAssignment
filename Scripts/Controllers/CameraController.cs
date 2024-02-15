@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraFollow : MonoBehaviour
+public class CameraController : MonoBehaviour
 {
     private Ball ball;
     private LevelController levelController;
@@ -14,6 +14,8 @@ public class CameraFollow : MonoBehaviour
     private Coroutine moveCoroutine;
 
     private bool isFalling = false;
+
+    private bool lessDepth = true;
 
     private void Awake()
     {
@@ -53,9 +55,22 @@ public class CameraFollow : MonoBehaviour
         moveCoroutine = null;
     }
 
+    public void ChangeCamera()
+    {
+        lessDepth = !lessDepth;
+
+        yOffset = lessDepth ? 3f : 6f;
+        cameraPosition.z = lessDepth ? -16 : -8;
+        Camera.main.transform.rotation = Quaternion.Euler(lessDepth ? 0f : 20f, 0f, 0f);
+        Camera.main.fieldOfView = lessDepth ? 30f : 60f;
+    }
+
     private void OnRestarLevel()
     {
-        cameraPosition.y = yOffset;
+        if (moveCoroutine != null)
+            StopCoroutine(moveCoroutine);
+
+        cameraPosition.y = levelController.GetStartPosition() + yOffset;
         transform.position = cameraPosition;
     }
 
