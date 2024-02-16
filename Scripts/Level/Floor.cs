@@ -5,6 +5,7 @@ public class Floor : SpawnObject
 {
     private bool start = false;
     private List<SpawnObject> objects = new List<SpawnObject>();
+    public int floorId = 0;
 
     public override void Reset()
     {

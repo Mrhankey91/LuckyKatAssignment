@@ -107,9 +107,13 @@
                     "rotation": 252
                 },
                 {
-                    "key": "spikes",
+                    "key": "saw",
                     "rotation": -36,
                     "mirrored": true
+                },
+                {
+                    "key": "saw",
+                    "rotation": -36
                 },
                 {
                     "key": "spikes",
@@ -180,6 +184,10 @@
                 },
                 {
                     "key": "floorpart_3",
+                    "rotation": 270
+                },
+                {
+                    "key": "saw",
                     "rotation": 270
                 }
             ]

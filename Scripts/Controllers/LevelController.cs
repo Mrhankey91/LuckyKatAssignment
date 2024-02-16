@@ -33,6 +33,7 @@ public class LevelController : MonoBehaviour
 
     private void Start()
     {
+        currentLevel = DataContainer.instance.levelId;
         //GenerateRandomLevel();
         GenerateLevel(currentLevel, true);
         GenerateLevel(currentLevel+1);
@@ -119,6 +120,7 @@ public class LevelController : MonoBehaviour
         floor.transform.position = new Vector3(0f, currentFloorY, 0f);
         floor.Init();
         floor.SetAsFinishStartNewLevel(startFloor);
+        floor.floorId = floorData.floor;
 
         foreach (PartData partData in floorData.parts)
         {
@@ -200,7 +202,7 @@ public class LevelController : MonoBehaviour
         if (levels.Count == 0)
             return 0f;
         else
-            return levels.Peek().floors[levels.Peek().floors.Length-1].transform.position.y;
+            return levels.Peek().floors[levels.Peek().floors.Length-1].transform.position.y + distanceBetweenFloors;
         //return numberFloors * distanceBetweenFloors;
     }
 

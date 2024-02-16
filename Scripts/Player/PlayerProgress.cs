@@ -6,8 +6,6 @@ public class PlayerProgress : MonoBehaviour
 {
     private LevelController levelController;
 
-    private float progress;
-
     void Awake()
     {
         levelController = GameObject.Find("GameController").GetComponent<LevelController>();

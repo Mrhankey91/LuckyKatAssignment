@@ -291,7 +291,7 @@ TextureImporter:
         width: 128
         height: 128
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -299,6 +299,27 @@ TextureImporter:
       bones: []
       spriteID: 166b4265f64830944b3044bbdd4f6579
       internalID: 1806706955
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GUI_Button
+      rect:
+        serializedVersion: 2
+        x: 268
+        y: 248
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 20, y: 30, z: 20, w: 20}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 57a5c9e9ed0dca644932eefd021a078b
+      internalID: 1820714283
       vertices: []
       indices: 
       edges: []
@@ -314,6 +335,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
+      GUI_Button: 1820714283
       GUI_ButtonLeft: -195324944
       GUI_ButtonLeft_Bg: -892505067
       GUI_ButtonMiddle: 150195765

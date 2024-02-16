@@ -195,6 +195,10 @@
                 {
                     "key": "floorpart_4",
                     "rotation": 252
+                },
+                {
+                    "key": "saw",
+                    "rotation": 72
                 }
             ]
         },
@@ -228,6 +232,10 @@
                 },
                 {
                     "key": "coin",
+                    "rotation": 306
+                },
+                {
+                    "key": "saw",
                     "rotation": 306
                 }
             ]

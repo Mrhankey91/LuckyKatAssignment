@@ -17,6 +17,10 @@ public class PlayerControls : MonoBehaviour
     public bool click = false;//if mouse/touch is down
     private Vector2 swipeDirection;
 
+    public LayerMask rayCastLayers;
+    private float rayCastRadius = 0.48f;
+    private float rayCastDistance = 0.12f;
+
     void Awake()
     {
         ball = GameObject.Find("Ball").GetComponent<Ball>();
@@ -25,7 +29,28 @@ public class PlayerControls : MonoBehaviour
 
     void Update()
     {
-        helixTransform.eulerAngles += new Vector3(0f, rotateSpeed * rotateInput.x * Time.deltaTime, 0f);
+        if(CanMoveDirection(rotateInput.x))
+            helixTransform.eulerAngles += new Vector3(0f, rotateSpeed * rotateInput.x * Time.deltaTime, 0f);
+    }
+
+    //Check if any platform in way of ball, helps reduce times ball gets in a platform
+    private bool CanMoveDirection(float direction)
+    {
+        if(direction == 0f) return false;
+
+        RaycastHit hit;
+        Vector3 dir;
+        if(PlayerPrefs.GetInt("InvertMovement", 0) == 0)
+            dir = ball.transform.TransformDirection(direction > 0 ? Vector3.right : Vector3.left);
+        else
+            dir = ball.transform.TransformDirection(direction > 0 ? Vector3.left : Vector3.right);
+
+        if (Physics.SphereCast(ball.transform.position - (dir * 0.1f), rayCastRadius, dir, out hit, rayCastDistance, rayCastLayers))
+        {
+            return false;
+        }
+
+        return true;
     }
 
     private void MouseTouchRelease()
@@ -76,6 +101,7 @@ public class PlayerControls : MonoBehaviour
     {
         ball.jump = true;
     }
+
     private void OnJump(InputValue value)
     {
         ball.jump = true;

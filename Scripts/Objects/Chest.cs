@@ -5,11 +5,15 @@ using UnityEngine;
 public class Chest : SpawnObject, ICollectable
 {
     private CoinsComponent coinsComponent;
+    private Transform chestModelTransform;
     private Transform chestTopTransform;
     private ParticleSystem particleSystem;
 
+    public GameObject[] coins;
+
     private bool opened = false;
     private int value = 5;
+    private WaitForSeconds coinsShowTime = new WaitForSeconds(2f);
 
     private Vector3 closedRotation = Vector3.zero;//euler angles
     private Vector3 openedRottation= new Vector3(-110f, 0f, 0f);//euler angles
@@ -18,6 +22,7 @@ public class Chest : SpawnObject, ICollectable
     {
         base.Awake();
         coinsComponent = GameObject.Find("GameController").GetComponent<CoinsComponent>();
+        chestModelTransform = transform.Find("Chest");
         chestTopTransform = transform.Find("Chest/ChestTop");
         particleSystem = transform.Find("ParticleSystem").GetComponent<ParticleSystem>();
     }
@@ -55,5 +60,24 @@ public class Chest : SpawnObject, ICollectable
         }
 
         coinsComponent.Coins += value;
+        StartCoroutine(ShowCoins());
+    }
+
+    private IEnumerator ShowCoins()
+    {
+        foreach (GameObject coin in coins)
+        {
+            coin.SetActive(true);
+            coin.transform.position = chestModelTransform.position;
+            coin.transform.rotation = Quaternion.Euler(Random.Range(0, 360), Random.Range(0, 360), Random.Range(0, 360));
+            coin.GetComponent<Rigidbody>().AddForce(new Vector3(0f, Random.Range(3f, 4f), 0f), ForceMode.Impulse);
+        }
+
+        yield return coinsShowTime;
+
+        foreach (GameObject coin in coins)
+        {
+            coin.SetActive(false);
+        }
     }
 }

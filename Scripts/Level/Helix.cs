@@ -1,18 +1,14 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Assets.Scripts.Level
+public class Helix : MonoBehaviour
 {
-    public class Helix : MonoBehaviour
+    void Awake()
     {
-        void Awake()
-        {
-            GameObject.Find("GameController").GetComponent<GameController>().onRestarLevel += OnRestartLevel;
-        }
+        GameObject.Find("GameController").GetComponent<GameController>().onRestarLevel += OnRestartLevel;
+    }
 
-        private void OnRestartLevel()
-        {
-            transform.rotation = Quaternion.identity;
-        }
+    private void OnRestartLevel()
+    {
+        transform.rotation = Quaternion.identity;
     }
 }

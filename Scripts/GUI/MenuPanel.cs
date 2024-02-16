@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MenuPanel : MonoBehaviour
@@ -28,6 +29,11 @@ public class MenuPanel : MonoBehaviour
         gameObject.SetActive(show);
     }
 
+    public void MainMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
+    }
+
     private void OnInvertToggleChanged(bool value)
     {
         PlayerPrefs.SetInt("InvertMovement", value ? 1 : 0);
@@ -37,4 +43,5 @@ public class MenuPanel : MonoBehaviour
     {
         PlayerPrefs.SetFloat("Sensitivity", value);
     }
+
 }
